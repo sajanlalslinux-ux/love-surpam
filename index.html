@@ -37,12 +37,16 @@
             margin: 5px;
         }
         button:active { transform: scale(0.95); }
-        button:disabled { 
-            background-color: #e0e0e0; 
-            color: #999;
-            cursor: not-allowed; 
-            box-shadow: none; 
-            transform: none;
+
+        .time-locked {
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: #d63384;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2px 5px;
+            border-radius: 5px;
+            margin-top: 5px;
+            display: inline-block;
         }
 
         .whatsapp-btn {
@@ -80,6 +84,8 @@
             gap: 15px;
             width: 100%;
             padding: 10px;
+            overflow-y: auto;
+            max-height: 80vh;
         }
 
         .day-card {
@@ -171,7 +177,6 @@
             z-index: 200;
             padding: 20px;
             transition: opacity 0.3s;
-            overflow-y: auto; /* Allow scrolling if grid is tall */
         }
         .hidden { opacity: 0; pointer-events: none; display: none; }
 
@@ -255,12 +260,12 @@
 
     <script>
         const LEVELS = [
-            { id: 1, date: 9, title: "Chocolate Day", icon: "🍫", items: ['🍫', '🍩', '🍪'], bad: ['🥦'], desc: "Catch sweets!", time: 30, goal: 60, quote: "Sweet like love 😉 Happy Chocolate Day!" },
-            { id: 2, date: 10, title: "Teddy Day", icon: "🧸", items: ['🧸', '🐻', '🐼'], bad: ['🕷️'], desc: "Catch teddies!", time: 30, goal: 70, quote: "You are my cutest Teddy! 🧸" },
-            { id: 3, date: 11, title: "Promise Day", icon: "🤝", items: ['🤝', '🤞', '💍'], bad: ['💔'], desc: "Catch promises!", time: 30, goal: 80, quote: "I promise to be yours forever! 🤝" },
-            { id: 4, date: 12, title: "Hug Day", icon: "🤗", items: ['🤗', '🫂', '👐'], bad: ['🌵'], desc: "Catch hugs!", time: 30, goal: 80, quote: "Sending you a big warm hug! 🤗" },
-            { id: 5, date: 13, title: "Kiss Day", icon: "😘", items: ['💋', '😘', '😚'], bad: ['🍋'], desc: "Catch kisses!", time: 30, goal: 90, quote: "Sending you a million kisses! 😘" },
-            { id: 6, date: 14, title: "Valentine's Day", icon: "❤️", items: ['❤️ Sajanlal', '💖'], bad: ['💔'], desc: "Catch Love!", time: 30, goal: 100, quote: "In all the world, no heart like yours. I Love You Amritha! ❤️" }
+            { id: 1, date: 9, title: "Chocolate Day", icon: "🍫", items: ['🍫', '🍩', '🍪'], bad: ['🥦'], desc: "Catch sweets!", time: 30, goal: 60, quote: "Amritha's life is sweet because of Sajanlal! 🍫<br><b>Love Connected!</b>" },
+            { id: 2, date: 10, title: "Teddy Day", icon: "🧸", items: ['🧸', '🐻', '🐼'], bad: ['🕷️'], desc: "Catch teddies!", time: 30, goal: 70, quote: "Amritha is Sajanlal's cutest Teddy forever! 🧸<br><b>Cuteness Overload!</b>" },
+            { id: 3, date: 11, title: "Promise Day", icon: "🤝", items: ['🤝', '🤞', '💍'], bad: ['💔'], desc: "Catch promises!", time: 30, goal: 80, quote: "Sajanlal promises to love Amritha forever! 🤝<br><b>Promise Kept!</b>" },
+            { id: 4, date: 12, title: "Hug Day", icon: "🤗", items: ['🤗', '🫂', '👐'], bad: ['🌵'], desc: "Catch hugs!", time: 30, goal: 80, quote: "Amritha & Sajanlal: Connected by warm hugs! 🤗<br><b>Hugs Received!</b>" },
+            { id: 5, date: 13, title: "Kiss Day", icon: "😘", items: ['💋', '😘', '😚'], bad: ['🍋'], desc: "Catch kisses!", time: 30, goal: 90, quote: "Sajanlal sends a million kisses to his Amritha! 😘<br><b>Sealed with a Kiss!</b>" },
+            { id: 6, date: 14, title: "Valentine's Day", icon: "❤️", items: ['❤️ Sajanlal', '💖'], bad: ['💔'], desc: "Catch Love!", time: 30, goal: 100, quote: "Amritha ❤️ Sajanlal<br>100% Love Connected!<br><b>Be my Valentine forever!</b>" }
         ];
 
         class ValentineGame {
@@ -282,6 +287,7 @@
                 this.timer = 0;
                 this.gameActive = false;
                 this.intervals = [];
+                this.updateTimerInterval = null;
 
                 this.bindEvents();
             }
@@ -316,6 +322,8 @@
                 if (val === 'sajanlal' || val === 'sajan') {
                     this.loginScreen.classList.add('hidden');
                     this.showCalendar();
+                    // Start updating timers every second
+                    this.updateTimerInterval = setInterval(() => this.updateLockTimers(), 1000);
                 } else {
                     document.getElementById('error-msg').style.display = 'block';
                 }
@@ -328,34 +336,56 @@
                 this.levelScreen.classList.add('hidden');
                 this.resultScreen.classList.add('hidden');
                 this.calendarScreen.classList.remove('hidden');
+                this.updateLockTimers(); // Initial render
+            }
 
+            updateLockTimers() {
                 const grid = document.getElementById('calendar-grid');
+                if (this.calendarScreen.classList.contains('hidden')) return;
+                
+                // Only rebuild if grid is empty or time changed day (rare)
+                // Actually easier to just rebuild content properly or update specific elements
+                // But full rebuild is safer for logic simplicity
                 grid.innerHTML = '';
-
-                // Get current date
+                
                 const now = new Date();
-                const currentMonth = now.getMonth(); // 0-indexed (1 is Feb)
-                const currentDay = now.getDate();
+                const currentMonth = now.getMonth(); // 0-indexed (Jan=0, Feb=1)
+                const currentDay = now.getDate(); // 1-31
                 
                 LEVELS.forEach(lvl => {
                     const card = document.createElement('div');
                     card.classList.add('day-card');
                     
-                    // Logic: Unlock if Today >= Level Date (Assuming Month is Feb)
-                    let locked = true;
-                    if (currentMonth > 1) locked = false; // It's past Feb
-                    else if (currentMonth === 1) { // It is Feb
-                         if (currentDay >= lvl.date) locked = false;
-                    } 
+                    // Logic: Is it unlocked yet?
+                    let isUnlocked = false;
+                    let timeRemainingHTML = '';
 
-                    if (locked) {
+                    // Target Date: Feb X, this year
+                    const targetDate = new Date(now.getFullYear(), 1, lvl.date); // Month 1 is Feb
+                    
+                    // If target date is in the past (or today), it's unlocked
+                    if (now >= targetDate) {
+                        isUnlocked = true;
+                    } else {
+                        // Calculate countdown
+                        const diff = targetDate - now;
+                        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                        
+                        timeRemainingHTML = `<div class="time-locked">Opens in: ${days}d ${hours}h ${minutes}m ${seconds}s</div>`;
+                    }
+
+                    if (!isUnlocked) {
                         card.classList.add('locked');
                         card.innerHTML = `
                             <div class="lock-icon">🔒</div>
                             <div class="day-date">Feb ${lvl.date}</div>
                             <div class="day-title">Locked</div>
+                            ${timeRemainingHTML}
                         `;
-                        card.onclick = () => alert(`This gift opens on Feb ${lvl.date}! Wait for it 😉`);
+                        card.onclick = () => alert(`Wait! This gift opens on Feb ${lvl.date}!`);
                     } else {
                         card.classList.add('unlocked');
                         card.innerHTML = `
@@ -505,4 +535,3 @@
     </script>
 </body>
 </html>
-
