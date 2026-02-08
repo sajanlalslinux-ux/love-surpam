@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Amritha & Sajanlal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Valentine's Love Catcher Styles */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            color: #d63384;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            touch-action: none; 
+        }
+
+        h1, h2, h3 {
+            font-family: 'Pacifico', cursive;
+            color: #e91e63;
+        }
+
+        button {
+            background-color: #ff4081;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 64, 129, 0.4);
+            transition: transform 0.2s, background 0.2s;
+            margin: 5px;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .whatsapp-btn {
+            background-color: #25D366;
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none; 
+            color: white; 
+        }
+
+        .whatsapp-btn:hover {
+            background-color: #128C7E;
+        }
+
+        #game-container {
+            width: 100%;
+            max-width: 500px;
+            height: 100%;
+            position: relative;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 0;
+            overflow: hidden;
+        }
+
+        @media (min-width: 768px) {
+            #game-container {
+                height: 90vh;
+                border-radius: 20px;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        header {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 10;
+        }
+
+        #score-board {
+            font-weight: bold;
+            margin-top: 5px;
+            font-size: 1.2rem;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        #play-area {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        /* The Girl Catcher */
+        #catcher {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 4rem;
+            z-index: 100;
+            pointer-events: none; 
+            transition: left 0.05s ease-out; 
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2));
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 2rem;
+            user-select: none;
+            z-index: 5;
+        }
+
+        .broken-heart {
+            position: absolute;
+            font-size: 2rem;
+            user-select: none;
+            z-index: 5;
+            filter: grayscale(100%);
+        }
+
+        /* Overlays */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 200;
+            transition: opacity 0.5s;
+            padding: 20px;
+        }
+
+        .overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+            display: none;
+        }
+
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        /* Quote Style */
+        .love-quote {
+            font-style: italic;
+            font-family: 'Pacifico', cursive;
+            color: #d63384;
+            font-size: 1.5rem;
+            margin: 20px 0;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <header>
+            <h1>Catch Sajanlal's Love! ❤️</h1>
+            <div id="score-board">Love Meter: <span id="score">0</span>%</div>
+        </header>
+        
+        <div id="play-area">
+            <!-- The Girl Catcher -->
+            <div id="catcher">👩🏻</div>
+        </div>
+
+        <!-- NEW: Login Screen -->
+        <div id="login-screen" class="overlay">
+            <h2>🔒 Locked for Love</h2>
+            <p>Enter the secret password to open your surprise!</p>
+            <p style="font-size: 0.9rem; color: #666;">Hint: Who loves you the most?</p>
+            <input type="text" id="password-input" placeholder="Enter name..." style="padding: 10px; font-size: 1.2rem; border-radius: 10px; border: 2px solid #ff4081; margin: 15px 0; text-align: center; width: 80%;">
+            <button id="login-btn">Unlock ❤️</button>
+            <p id="error-msg" style="color: red; display: none; margin-top: 10px;">Wrong password! Try his name...</p>
+        </div>
+
+        <div id="start-screen" class="overlay hidden">
+            <h2>Hi Amritha!</h2>
+            <p>Sajanlal is sending you lots of love!</p>
+            <p><strong>Reach 100% to see a surprise from Sajanlal! 🎁</strong></p>
+            <p>Move the girl to catch the falling hearts ❤️</p>
+            <p style="font-size: 0.9rem; margin-top: 10px; color: #666;">(Drag your finger to move)</p>
+            <button id="start-btn">Start Game</button>
+        </div>
+
+        <div id="game-over-screen" class="overlay hidden">
+            <h2 id="result-title">Love Overload!</h2>
+            <div id="result-message" class="love-quote"></div>
+            <div class="actions">
+                <button id="restart-btn">Play Again</button>
+                <button id="whatsapp-btn" class="whatsapp-btn">
+                    Message Sajanlal 💌
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        class ValentineGame {
+            constructor() {
+                this.gameContainer = document.getElementById('game-container');
+                this.playArea = document.getElementById('play-area');
+                this.catcher = document.getElementById('catcher');
+                this.scoreDisplay = document.getElementById('score');
+                
+                // Screens
+                this.loginScreen = document.getElementById('login-screen');
+                this.startScreen = document.getElementById('start-screen');
+                this.gameOverScreen = document.getElementById('game-over-screen');
+                
+                // Login Elements
+                this.passwordInput = document.getElementById('password-input');
+                this.loginBtn = document.getElementById('login-btn');
+                this.errorMsg = document.getElementById('error-msg');
+                
+                // Result Elements
+                this.resultTitle = document.getElementById('result-title');
+                this.resultMessage = document.getElementById('result-message');
+                
+                this.score = 0;
+                this.gameActive = false;
+                this.spawnInterval = null;
+                this.checkCollisionInterval = null;
+                this.gameDuration = 30000;
+                this.hearts = ['❤️ Sajanlal', '💖 Sajanlal', '💕 Sajanlal', '❤️', '💖', '🥰', '😍'];
+                
+                this.activeElements = [];
+                
+                this.bindEvents();
+            }
+
+            bindEvents() {
+                // Login
+                this.loginBtn.addEventListener('click', () => this.checkPassword());
+                
+                // Allow pressing Enter to login
+                this.passwordInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.checkPassword();
+                });
+
+                document.getElementById('start-btn').addEventListener('click', () => this.startGame());
+                document.getElementById('restart-btn').addEventListener('click', () => this.startGame());
+                document.getElementById('whatsapp-btn').addEventListener('click', () => this.shareOnWhatsApp());
+
+                // Movement Logic relative to playArea
+                const moveCatcher = (clientX) => {
+                    if (!this.gameActive) return;
+                    
+                    const containerRect = this.playArea.getBoundingClientRect();
+                    // Calculate x relative to container
+                    let x = clientX - containerRect.left;
+                    
+                    // Constrain within bounds
+                    x = Math.max(0, Math.min(x, containerRect.width));
+                    
+                    this.catcher.style.left = `${x}px`;
+                };
+
+                // Mouse
+                this.gameContainer.addEventListener('mousemove', (e) => {
+                    moveCatcher(e.clientX);
+                });
+
+                // Touch
+                this.gameContainer.addEventListener('touchmove', (e) => {
+                    e.preventDefault(); // Prevent scrolling
+                    moveCatcher(e.touches[0].clientX);
+                }, { passive: false });
+                
+                this.gameContainer.addEventListener('touchstart', (e) => {
+                    if (!this.gameActive) return;
+                    moveCatcher(e.touches[0].clientX);
+                }, { passive: false });
+            }
+
+            checkPassword() {
+                const password = this.passwordInput.value.trim().toLowerCase();
+                // Password is "sajanlal" (case insensitive)
+                if (password === 'sajanlal' || password === 'sajan' || password === 'sajan lal') {
+                    this.loginScreen.classList.add('hidden');
+                    this.startScreen.classList.remove('hidden');
+                    // Reset error message if it was shown
+                    this.errorMsg.style.display = 'none';
+                } else {
+                    this.errorMsg.style.display = 'block';
+                    // Shake animation for feedback
+                    this.passwordInput.style.animation = 'shake 0.5s';
+                    setTimeout(() => this.passwordInput.style.animation = '', 500);
+                }
+            }
+
+            startGame() {
+                this.score = 0;
+                this.updateScore();
+                this.gameActive = true;
+                this.activeElements = [];
+                
+                this.startScreen.classList.add('hidden');
+                this.gameOverScreen.classList.add('hidden');
+                this.gameOverScreen.style.display = 'none'; 
+                
+                const oldHearts = document.querySelectorAll('.heart, .broken-heart');
+                oldHearts.forEach(el => el.remove());
+                
+                this.spawnInterval = setInterval(() => this.spawnHeart(), 600);
+                this.checkCollisionInterval = setInterval(() => this.checkCollisions(), 50);
+                
+                setTimeout(() => this.endGame(), this.gameDuration);
+            }
+
+            spawnHeart() {
+                if (!this.gameActive) return;
+
+                const isBroken = Math.random() < 0.15; 
+                const el = document.createElement('div');
+                el.classList.add(isBroken ? 'broken-heart' : 'heart');
+                
+                if (isBroken) {
+                    el.innerText = '💔';
+                } else {
+                    const content = this.hearts[Math.floor(Math.random() * this.hearts.length)];
+                    el.innerHTML = content;
+                    el.style.fontSize = content.includes('Sajanlal') ? '1.2rem' : '2rem';
+                    el.style.whiteSpace = 'nowrap';
+                    el.style.fontWeight = 'bold';
+                    el.style.textShadow = '0px 0px 5px rgba(255, 255, 255, 0.8)';
+                }
+                
+                const maxLeft = this.playArea.clientWidth - 50; 
+                const x = Math.random() * maxLeft;
+                
+                el.style.left = `${x}px`;
+                el.style.top = '-50px';
+                
+                const duration = 2500 + Math.random() * 2500; 
+                
+                const heartObj = {
+                    el: el,
+                    id: Math.random()
+                };
+                
+                this.activeElements.push(heartObj);
+                this.playArea.appendChild(el);
+
+                el.style.transition = `top ${duration}ms linear`;
+                
+                void el.offsetWidth;
+                
+                el.style.top = `${this.playArea.clientHeight + 50}px`;
+                
+                setTimeout(() => {
+                    if (el.parentNode) {
+                        el.remove();
+                        this.activeElements = this.activeElements.filter(i => i.id !== heartObj.id);
+                    }
+                }, duration);
+            }
+
+            checkCollisions() {
+                if (!this.gameActive) return;
+
+                const catcherRect = this.catcher.getBoundingClientRect();
+                const hitbox = {
+                    left: catcherRect.left + 20, 
+                    right: catcherRect.right - 20,
+                    top: catcherRect.top + 20,
+                    bottom: catcherRect.bottom - 20
+                };
+
+                const hearts = document.querySelectorAll('.heart, .broken-heart');
+                
+                hearts.forEach(el => {
+                    const r = el.getBoundingClientRect();
+                    
+                    if (!(r.right < hitbox.left || 
+                          r.left > hitbox.right || 
+                          r.bottom < hitbox.top || 
+                          r.top > hitbox.bottom)) {
+                        
+                        this.handleCatch(el);
+                    }
+                });
+            }
+
+            handleCatch(el) {
+                const isBroken = el.classList.contains('broken-heart');
+                
+                const containerRect = this.gameContainer.getBoundingClientRect();
+                const x = el.getBoundingClientRect().left - containerRect.left;
+                const y = el.getBoundingClientRect().top - containerRect.top;
+                
+                if (isBroken) {
+                    this.score = Math.max(0, this.score - 10);
+                    this.showFloatingText(x, y, '-10', 'red');
+                } else {
+                    this.score += 10; 
+                    this.showFloatingText(x, y, '+10', 'green');
+                }
+                
+                this.score = Math.min(100, this.score);
+                this.updateScore();
+                el.remove();
+                
+                if (this.score >= 100) {
+                    this.endGame(true);
+                }
+            }
+
+            showFloatingText(x, y, text, color) {
+                const floatEl = document.createElement('div');
+                floatEl.innerText = text;
+                floatEl.style.position = 'absolute';
+                floatEl.style.left = `${x}px`;
+                floatEl.style.top = `${y}px`;
+                floatEl.style.color = color;
+                floatEl.style.fontWeight = 'bold';
+                floatEl.style.fontSize = '1.5rem';
+                floatEl.style.pointerEvents = 'none'; 
+                floatEl.style.transition = 'all 1s ease-out';
+                floatEl.style.zIndex = '100';
+                
+                this.gameContainer.appendChild(floatEl); 
+                void floatEl.offsetWidth; 
+                floatEl.style.top = `${y - 50}px`;
+                floatEl.style.opacity = '0';
+                setTimeout(() => floatEl.remove(), 1000);
+            }
+
+            updateScore() {
+                this.scoreDisplay.innerText = this.score;
+            }
+
+            endGame(win = false) {
+                this.gameActive = false;
+                clearInterval(this.spawnInterval);
+                clearInterval(this.checkCollisionInterval);
+                
+                const remainingHearts = document.querySelectorAll('.heart, .broken-heart');
+                remainingHearts.forEach(h => h.remove());
+
+                this.gameOverScreen.style.removeProperty('display');
+                this.gameOverScreen.classList.remove('hidden');
+                
+                if (win || this.score >= 100) {
+                    this.resultTitle.innerText = "❤️ 100% LOVE! ❤️";
+                    this.resultMessage.innerHTML = 
+                        `"Amritha, in all the world, there is no heart for me like yours.<br>` + 
+                        `In all the world, there is no love for you like mine."<br><br>` +
+                        `<b>I Love You Amritha!</b>`;
+                } else {
+                    this.resultTitle.innerText = "Almost There!";
+                    this.resultMessage.innerHTML = `Amritha, you collected ${this.score}% of Sajanlal's love.<br>Try again to get the perfect score!`;
+                }
+            }
+
+            shareOnWhatsApp() {
+                const text = `Sajanlal, I faced your challenge and got ${this.score}%! You are my forever Valentine! ❤️`;
+                const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+                window.open(url, '_blank');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            new ValentineGame();
+        });
+    </script>
+</body>
+</html>
