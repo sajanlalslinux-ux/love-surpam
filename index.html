@@ -3,16 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Amritha & Sajanlal</title>
+    <title>Amritha & Sajanlal's Valentine Week</title>
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* Valentine's Love Catcher Styles */
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        /* Amor Style Reset */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Quicksand', sans-serif;
@@ -23,46 +18,41 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            touch-action: none; 
+            touch-action: none;
         }
 
-        h1, h2, h3 {
-            font-family: 'Pacifico', cursive;
-            color: #e91e63;
-        }
+        h1, h2, h3 { font-family: 'Pacifico', cursive; color: #e91e63; margin-bottom: 10px; }
 
         button {
             background-color: #ff4081;
             color: white;
             border: none;
             border-radius: 50px;
-            padding: 15px 30px;
-            font-size: 1.2rem;
+            padding: 12px 25px;
+            font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(255, 64, 129, 0.4);
-            transition: transform 0.2s, background 0.2s;
+            transition: transform 0.2s;
             margin: 5px;
         }
-
-        button:active {
-            transform: scale(0.95);
+        button:active { transform: scale(0.95); }
+        button:disabled { 
+            background-color: #e0e0e0; 
+            color: #999;
+            cursor: not-allowed; 
+            box-shadow: none; 
+            transform: none;
         }
 
         .whatsapp-btn {
             background-color: #25D366;
-            margin-top: 15px;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
-            display: flex;
+            color: white;
+            text-decoration: none;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            text-decoration: none; 
-            color: white; 
-        }
-
-        .whatsapp-btn:hover {
-            background-color: #128C7E;
+            gap: 5px;
         }
 
         #game-container {
@@ -72,7 +62,6 @@
             position: relative;
             background: rgba(255, 255, 255, 0.4);
             backdrop-filter: blur(10px);
-            border-radius: 0;
             overflow: hidden;
         }
 
@@ -80,36 +69,81 @@
             #game-container {
                 height: 90vh;
                 border-radius: 20px;
-                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+                box-shadow: 0 10px 40px rgba(0,0,0,0.1);
             }
         }
 
+        /* Calendar Grid */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            width: 100%;
+            padding: 10px;
+        }
+
+        .day-card {
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .day-card.locked {
+            background: #f0f0f0;
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        .day-card.unlocked:hover {
+            transform: translateY(-5px);
+            background: #fff0f6;
+        }
+
+        .lock-icon {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .day-date {
+            font-weight: bold;
+            color: #e91e63;
+            font-size: 0.9rem;
+        }
+        
+        .day-title {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        /* HUD */
         header {
             position: absolute;
-            top: 20px;
-            left: 0;
-            right: 0;
+            top: 10px;
+            left: 0; right: 0;
             text-align: center;
             z-index: 10;
+            padding: 0 10px;
         }
-
-        #score-board {
-            font-weight: bold;
-            margin-top: 5px;
-            font-size: 1.2rem;
-            background: rgba(255, 255, 255, 0.8);
-            padding: 5px 15px;
+        
+        .hud-bar {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(255,255,255,0.8);
+            padding: 8px 15px;
             border-radius: 20px;
-            display: inline-block;
+            margin-top: 5px;
+            font-weight: bold;
+            font-size: 0.9rem;
         }
 
-        #play-area {
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
+        #play-area { width: 100%; height: 100%; position: relative; }
 
-        /* The Girl Catcher */
         #catcher {
             position: absolute;
             bottom: 20px;
@@ -117,379 +151,358 @@
             transform: translateX(-50%);
             font-size: 4rem;
             z-index: 100;
-            pointer-events: none; 
-            transition: left 0.05s ease-out; 
+            pointer-events: none;
             filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2));
+            transition: left 0.05s ease-out;
         }
 
-        .heart {
-            position: absolute;
-            font-size: 2rem;
-            user-select: none;
-            z-index: 5;
-        }
+        .item { position: absolute; font-size: 2rem; user-select: none; z-index: 5; }
+        .bad-item { filter: grayscale(100%); }
 
-        .broken-heart {
-            position: absolute;
-            font-size: 2rem;
-            user-select: none;
-            z-index: 5;
-            filter: grayscale(100%);
-        }
-
-        /* Overlays */
         .overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.95);
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.98);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
             z-index: 200;
-            transition: opacity 0.5s;
             padding: 20px;
+            transition: opacity 0.3s;
+            overflow-y: auto; /* Allow scrolling if grid is tall */
         }
+        .hidden { opacity: 0; pointer-events: none; display: none; }
 
-        .overlay.hidden {
-            opacity: 0;
-            pointer-events: none;
-            display: none;
-        }
-
-        .actions {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 100%;
-            max-width: 300px;
-        }
-
-        /* Quote Style */
         .love-quote {
             font-style: italic;
             font-family: 'Pacifico', cursive;
             color: #d63384;
-            font-size: 1.5rem;
-            margin: 20px 0;
-            line-height: 1.4;
+            font-size: 1.3rem;
+            margin: 15px 0;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 1.2rem;
+            border-radius: 10px;
+            border: 2px solid #ff4081;
+            margin: 15px 0;
+            text-align: center;
+            width: 80%;
         }
     </style>
 </head>
 <body>
     <div id="game-container">
-        <header>
-            <h1>Catch Sajanlal's Love! ❤️</h1>
-            <div id="score-board">Love Meter: <span id="score">0</span>%</div>
+        <header id="game-header" class="hidden">
+            <h2 id="level-title" style="font-size: 1.2rem;">Valentine's Week</h2>
+            <div class="hud-bar">
+                <span>❤️: <span id="score">0</span>%</span>
+                <span>⏳: <span id="timer">30</span>s</span>
+            </div>
         </header>
         
         <div id="play-area">
-            <!-- The Girl Catcher -->
             <div id="catcher">👩🏻</div>
         </div>
 
-        <!-- NEW: Login Screen -->
+        <!-- Login Screen -->
         <div id="login-screen" class="overlay">
-            <h2>🔒 Locked for Love</h2>
-            <p>Enter the secret password to open your surprise!</p>
-            <p style="font-size: 0.9rem; color: #666;">Hint: Who loves you the most?</p>
-            <input type="text" id="password-input" placeholder="Enter name..." style="padding: 10px; font-size: 1.2rem; border-radius: 10px; border: 2px solid #ff4081; margin: 15px 0; text-align: center; width: 80%;">
+            <h1>🔒 Locked for Love</h1>
+            <p>Enter Sajanlal's secret password:</p>
+            <input type="text" id="password-input" placeholder="Password...">
             <button id="login-btn">Unlock ❤️</button>
-            <p id="error-msg" style="color: red; display: none; margin-top: 10px;">Wrong password! Try his name...</p>
+            <p id="error-msg" style="color: red; display: none; margin-top: 5px;">Wrong password!</p>
         </div>
 
-        <div id="start-screen" class="overlay hidden">
-            <h2>Hi Amritha!</h2>
-            <p>Sajanlal is sending you lots of love!</p>
-            <p><strong>Reach 100% to see a surprise from Sajanlal! 🎁</strong></p>
-            <p>Move the girl to catch the falling hearts ❤️</p>
-            <p style="font-size: 0.9rem; margin-top: 10px; color: #666;">(Drag your finger to move)</p>
-            <button id="start-btn">Start Game</button>
+        <!-- Calendar Screen -->
+        <div id="calendar-screen" class="overlay hidden">
+            <h2>📅 Valentine's Calendar</h2>
+            <p style="margin-bottom: 20px;">Open your gift for today!</p>
+            <div class="calendar-grid" id="calendar-grid">
+                <!-- Days inserted by JS -->
+            </div>
         </div>
 
-        <div id="game-over-screen" class="overlay hidden">
-            <h2 id="result-title">Love Overload!</h2>
-            <div id="result-message" class="love-quote"></div>
-            <div class="actions">
-                <button id="restart-btn">Play Again</button>
-                <button id="whatsapp-btn" class="whatsapp-btn">
-                    Message Sajanlal 💌
+        <!-- Level Intro Screen -->
+        <div id="level-screen" class="overlay hidden">
+            <h2 id="ls-title">Day 1</h2>
+            <div id="ls-icon" style="font-size: 4rem; margin: 10px;">🎁</div>
+            <p id="ls-desc">Catch the items!</p>
+            <button id="start-level-btn">Start Game</button>
+            <button id="back-cal-btn" style="background-color: #666; font-size: 0.9rem;">Back</button>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="overlay hidden">
+            <h2 id="rs-title">Great Job!</h2>
+            <div id="rs-quote" class="love-quote">""</div>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button id="cal-return-btn">Back to Calendar 📅</button>
+                <button id="retry-btn">Try Again 🔄</button>
+                <button id="whatsapp-final-btn" class="whatsapp-btn hidden">
+                    Send "Yes" to Sajanlal 💌
                 </button>
             </div>
         </div>
     </div>
+
     <script>
+        const LEVELS = [
+            { id: 1, date: 9, title: "Chocolate Day", icon: "🍫", items: ['🍫', '🍩', '🍪'], bad: ['🥦'], desc: "Catch sweets!", time: 30, goal: 60, quote: "Sweet like love 😉 Happy Chocolate Day!" },
+            { id: 2, date: 10, title: "Teddy Day", icon: "🧸", items: ['🧸', '🐻', '🐼'], bad: ['🕷️'], desc: "Catch teddies!", time: 30, goal: 70, quote: "You are my cutest Teddy! 🧸" },
+            { id: 3, date: 11, title: "Promise Day", icon: "🤝", items: ['🤝', '🤞', '💍'], bad: ['💔'], desc: "Catch promises!", time: 30, goal: 80, quote: "I promise to be yours forever! 🤝" },
+            { id: 4, date: 12, title: "Hug Day", icon: "🤗", items: ['🤗', '🫂', '👐'], bad: ['🌵'], desc: "Catch hugs!", time: 30, goal: 80, quote: "Sending you a big warm hug! 🤗" },
+            { id: 5, date: 13, title: "Kiss Day", icon: "😘", items: ['💋', '😘', '😚'], bad: ['🍋'], desc: "Catch kisses!", time: 30, goal: 90, quote: "Sending you a million kisses! 😘" },
+            { id: 6, date: 14, title: "Valentine's Day", icon: "❤️", items: ['❤️ Sajanlal', '💖'], bad: ['💔'], desc: "Catch Love!", time: 30, goal: 100, quote: "In all the world, no heart like yours. I Love You Amritha! ❤️" }
+        ];
+
         class ValentineGame {
             constructor() {
-                this.gameContainer = document.getElementById('game-container');
+                this.container = document.getElementById('game-container');
                 this.playArea = document.getElementById('play-area');
                 this.catcher = document.getElementById('catcher');
-                this.scoreDisplay = document.getElementById('score');
+                this.header = document.getElementById('game-header');
                 
                 // Screens
                 this.loginScreen = document.getElementById('login-screen');
-                this.startScreen = document.getElementById('start-screen');
-                this.gameOverScreen = document.getElementById('game-over-screen');
+                this.calendarScreen = document.getElementById('calendar-screen');
+                this.levelScreen = document.getElementById('level-screen');
+                this.resultScreen = document.getElementById('result-screen');
                 
-                // Login Elements
-                this.passwordInput = document.getElementById('password-input');
-                this.loginBtn = document.getElementById('login-btn');
-                this.errorMsg = document.getElementById('error-msg');
-                
-                // Result Elements
-                this.resultTitle = document.getElementById('result-title');
-                this.resultMessage = document.getElementById('result-message');
-                
+                // State
+                this.currentLevel = null;
                 this.score = 0;
+                this.timer = 0;
                 this.gameActive = false;
-                this.spawnInterval = null;
-                this.checkCollisionInterval = null;
-                this.gameDuration = 30000;
-                this.hearts = ['❤️ Sajanlal', '💖 Sajanlal', '💕 Sajanlal', '❤️', '💖', '🥰', '😍'];
-                
-                this.activeElements = [];
-                
+                this.intervals = [];
+
                 this.bindEvents();
             }
 
             bindEvents() {
-                // Login
-                this.loginBtn.addEventListener('click', () => this.checkPassword());
+                document.getElementById('login-btn').addEventListener('click', () => this.login());
+                document.getElementById('password-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') this.login() });
                 
-                // Allow pressing Enter to login
-                this.passwordInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') this.checkPassword();
+                document.getElementById('start-level-btn').addEventListener('click', () => this.play());
+                document.getElementById('back-cal-btn').addEventListener('click', () => this.showCalendar());
+                document.getElementById('cal-return-btn').addEventListener('click', () => this.showCalendar());
+                document.getElementById('retry-btn').addEventListener('click', () => this.play());
+                document.getElementById('whatsapp-final-btn').addEventListener('click', () => {
+                    window.open(`https://wa.me/?text=${encodeURIComponent("Sajanlal, I accept your love! Happy Valentine's Day! ❤️")}`, '_blank');
                 });
 
-                document.getElementById('start-btn').addEventListener('click', () => this.startGame());
-                document.getElementById('restart-btn').addEventListener('click', () => this.startGame());
-                document.getElementById('whatsapp-btn').addEventListener('click', () => this.shareOnWhatsApp());
-
-                // Movement Logic relative to playArea
-                const moveCatcher = (clientX) => {
+                // Input
+                const move = (x) => {
                     if (!this.gameActive) return;
-                    
-                    const containerRect = this.playArea.getBoundingClientRect();
-                    // Calculate x relative to container
-                    let x = clientX - containerRect.left;
-                    
-                    // Constrain within bounds
-                    x = Math.max(0, Math.min(x, containerRect.width));
-                    
-                    this.catcher.style.left = `${x}px`;
+                    const rect = this.playArea.getBoundingClientRect();
+                    let left = x - rect.left;
+                    left = Math.max(0, Math.min(left, rect.width));
+                    this.catcher.style.left = left + 'px';
                 };
-
-                // Mouse
-                this.gameContainer.addEventListener('mousemove', (e) => {
-                    moveCatcher(e.clientX);
-                });
-
-                // Touch
-                this.gameContainer.addEventListener('touchmove', (e) => {
-                    e.preventDefault(); // Prevent scrolling
-                    moveCatcher(e.touches[0].clientX);
-                }, { passive: false });
-                
-                this.gameContainer.addEventListener('touchstart', (e) => {
-                    if (!this.gameActive) return;
-                    moveCatcher(e.touches[0].clientX);
-                }, { passive: false });
+                this.container.addEventListener('mousemove', e => { if (this.gameActive) move(e.clientX) });
+                this.container.addEventListener('touchmove', e => { e.preventDefault(); if (this.gameActive) move(e.touches[0].clientX) }, { passive: false });
+                this.container.addEventListener('touchstart', e => { if (this.gameActive) move(e.touches[0].clientX) }, { passive: false });
             }
 
-            checkPassword() {
-                const password = this.passwordInput.value.trim().toLowerCase();
-                // Password is "sajanlal" (case insensitive)
-                if (password === 'sajanlal' || password === 'sajan' || password === 'sajan lal') {
+            login() {
+                const val = document.getElementById('password-input').value.trim().toLowerCase();
+                if (val === 'sajanlal' || val === 'sajan') {
                     this.loginScreen.classList.add('hidden');
-                    this.startScreen.classList.remove('hidden');
-                    // Reset error message if it was shown
-                    this.errorMsg.style.display = 'none';
+                    this.showCalendar();
                 } else {
-                    this.errorMsg.style.display = 'block';
-                    // Shake animation for feedback
-                    this.passwordInput.style.animation = 'shake 0.5s';
-                    setTimeout(() => this.passwordInput.style.animation = '', 500);
+                    document.getElementById('error-msg').style.display = 'block';
                 }
             }
 
-            startGame() {
-                this.score = 0;
-                this.updateScore();
-                this.gameActive = true;
-                this.activeElements = [];
-                
-                this.startScreen.classList.add('hidden');
-                this.gameOverScreen.classList.add('hidden');
-                this.gameOverScreen.style.display = 'none'; 
-                
-                const oldHearts = document.querySelectorAll('.heart, .broken-heart');
-                oldHearts.forEach(el => el.remove());
-                
-                this.spawnInterval = setInterval(() => this.spawnHeart(), 600);
-                this.checkCollisionInterval = setInterval(() => this.checkCollisions(), 50);
-                
-                setTimeout(() => this.endGame(), this.gameDuration);
-            }
+            showCalendar() {
+                this.gameActive = false;
+                this.intervals.forEach(clearInterval);
+                this.header.classList.add('hidden');
+                this.levelScreen.classList.add('hidden');
+                this.resultScreen.classList.add('hidden');
+                this.calendarScreen.classList.remove('hidden');
 
-            spawnHeart() {
-                if (!this.gameActive) return;
+                const grid = document.getElementById('calendar-grid');
+                grid.innerHTML = '';
 
-                const isBroken = Math.random() < 0.15; 
-                const el = document.createElement('div');
-                el.classList.add(isBroken ? 'broken-heart' : 'heart');
+                // Get current date
+                const now = new Date();
+                const currentMonth = now.getMonth(); // 0-indexed (1 is Feb)
+                const currentDay = now.getDate();
                 
-                if (isBroken) {
-                    el.innerText = '💔';
-                } else {
-                    const content = this.hearts[Math.floor(Math.random() * this.hearts.length)];
-                    el.innerHTML = content;
-                    el.style.fontSize = content.includes('Sajanlal') ? '1.2rem' : '2rem';
-                    el.style.whiteSpace = 'nowrap';
-                    el.style.fontWeight = 'bold';
-                    el.style.textShadow = '0px 0px 5px rgba(255, 255, 255, 0.8)';
-                }
-                
-                const maxLeft = this.playArea.clientWidth - 50; 
-                const x = Math.random() * maxLeft;
-                
-                el.style.left = `${x}px`;
-                el.style.top = '-50px';
-                
-                const duration = 2500 + Math.random() * 2500; 
-                
-                const heartObj = {
-                    el: el,
-                    id: Math.random()
-                };
-                
-                this.activeElements.push(heartObj);
-                this.playArea.appendChild(el);
-
-                el.style.transition = `top ${duration}ms linear`;
-                
-                void el.offsetWidth;
-                
-                el.style.top = `${this.playArea.clientHeight + 50}px`;
-                
-                setTimeout(() => {
-                    if (el.parentNode) {
-                        el.remove();
-                        this.activeElements = this.activeElements.filter(i => i.id !== heartObj.id);
-                    }
-                }, duration);
-            }
-
-            checkCollisions() {
-                if (!this.gameActive) return;
-
-                const catcherRect = this.catcher.getBoundingClientRect();
-                const hitbox = {
-                    left: catcherRect.left + 20, 
-                    right: catcherRect.right - 20,
-                    top: catcherRect.top + 20,
-                    bottom: catcherRect.bottom - 20
-                };
-
-                const hearts = document.querySelectorAll('.heart, .broken-heart');
-                
-                hearts.forEach(el => {
-                    const r = el.getBoundingClientRect();
+                LEVELS.forEach(lvl => {
+                    const card = document.createElement('div');
+                    card.classList.add('day-card');
                     
-                    if (!(r.right < hitbox.left || 
-                          r.left > hitbox.right || 
-                          r.bottom < hitbox.top || 
-                          r.top > hitbox.bottom)) {
-                        
-                        this.handleCatch(el);
+                    // Logic: Unlock if Today >= Level Date (Assuming Month is Feb)
+                    let locked = true;
+                    if (currentMonth > 1) locked = false; // It's past Feb
+                    else if (currentMonth === 1) { // It is Feb
+                         if (currentDay >= lvl.date) locked = false;
+                    } 
+
+                    if (locked) {
+                        card.classList.add('locked');
+                        card.innerHTML = `
+                            <div class="lock-icon">🔒</div>
+                            <div class="day-date">Feb ${lvl.date}</div>
+                            <div class="day-title">Locked</div>
+                        `;
+                        card.onclick = () => alert(`This gift opens on Feb ${lvl.date}! Wait for it 😉`);
+                    } else {
+                        card.classList.add('unlocked');
+                        card.innerHTML = `
+                            <div class="lock-icon">${lvl.icon}</div>
+                            <div class="day-date">Feb ${lvl.date}</div>
+                            <div class="day-title">${lvl.title}</div>
+                        `;
+                        card.onclick = () => this.showLevelIntro(lvl);
+                    }
+                    grid.appendChild(card);
+                });
+            }
+
+            showLevelIntro(lvl) {
+                this.currentLevel = lvl;
+                this.calendarScreen.classList.add('hidden');
+                this.levelScreen.classList.remove('hidden');
+                
+                document.getElementById('ls-title').innerText = `${lvl.title} (Feb ${lvl.date})`;
+                document.getElementById('ls-icon').innerText = lvl.icon;
+                document.getElementById('ls-desc').innerText = lvl.desc;
+            }
+
+            play() {
+                this.levelScreen.classList.add('hidden');
+                this.resultScreen.classList.add('hidden');
+                this.header.classList.remove('hidden');
+                
+                this.score = 0;
+                this.timer = this.currentLevel.time;
+                this.gameActive = true;
+                
+                document.getElementById('level-title').innerText = this.currentLevel.title;
+                this.updateHud();
+                
+                // Clean
+                this.playArea.querySelectorAll('.item').forEach(e => e.remove());
+                
+                this.intervals.push(setInterval(() => this.spawn(), 550));
+                this.intervals.push(setInterval(() => this.tick(), 1000));
+                this.intervals.push(setInterval(() => this.col(), 50));
+            }
+
+            tick() {
+                this.timer--;
+                this.updateHud();
+                if (this.timer <= 0) this.end();
+            }
+
+            spawn() {
+                if (!this.gameActive) return;
+                const i = document.createElement('div');
+                i.classList.add('item');
+                const isBad = Math.random() < 0.2;
+                
+                if(isBad) {
+                    i.innerText = this.currentLevel.bad[0];
+                    i.dataset.bad = 'true';
+                } else {
+                    const txt = this.currentLevel.items[Math.floor(Math.random()*this.currentLevel.items.length)];
+                    i.innerHTML = txt;
+                    if(txt.length > 5) { i.style.fontSize='1.2rem'; i.style.fontWeight='bold'; i.style.whiteSpace='nowrap'; }
+                }
+                
+                const max = this.playArea.clientWidth - 50;
+                i.style.left = Math.random()*max + 'px';
+                i.style.top = '-50px';
+                this.playArea.appendChild(i);
+
+                const anim = i.animate([{top:'-50px'}, {top: (this.playArea.clientHeight+50)+'px'}], {duration: 2500, easing:'linear'});
+                anim.onfinish = () => i.remove();
+            }
+
+            col() {
+                const c = this.catcher.getBoundingClientRect();
+                const hit = {l:c.left+20, r:c.right-20, t:c.top+20, b:c.bottom-20};
+                document.querySelectorAll('.item').forEach(it => {
+                    const r = it.getBoundingClientRect();
+                    if(!(r.right<hit.l || r.left>hit.r || r.bottom<hit.t || r.top>hit.b)) {
+                        this.hit(it);
                     }
                 });
             }
 
-            handleCatch(el) {
-                const isBroken = el.classList.contains('broken-heart');
+            hit(el) {
+                const bad = el.dataset.bad === 'true';
+                const rect = el.getBoundingClientRect();
+                this.float(rect.left, rect.top, bad ? "-10" : "+10", bad ? "red" : "green");
                 
-                const containerRect = this.gameContainer.getBoundingClientRect();
-                const x = el.getBoundingClientRect().left - containerRect.left;
-                const y = el.getBoundingClientRect().top - containerRect.top;
-                
-                if (isBroken) {
-                    this.score = Math.max(0, this.score - 10);
-                    this.showFloatingText(x, y, '-10', 'red');
-                } else {
-                    this.score += 10; 
-                    this.showFloatingText(x, y, '+10', 'green');
-                }
+                if(bad) this.score = Math.max(0, this.score-10);
+                else this.score += 10;
                 
                 this.score = Math.min(100, this.score);
-                this.updateScore();
+                this.updateHud();
                 el.remove();
-                
-                if (this.score >= 100) {
-                    this.endGame(true);
-                }
             }
 
-            showFloatingText(x, y, text, color) {
-                const floatEl = document.createElement('div');
-                floatEl.innerText = text;
-                floatEl.style.position = 'absolute';
-                floatEl.style.left = `${x}px`;
-                floatEl.style.top = `${y}px`;
-                floatEl.style.color = color;
-                floatEl.style.fontWeight = 'bold';
-                floatEl.style.fontSize = '1.5rem';
-                floatEl.style.pointerEvents = 'none'; 
-                floatEl.style.transition = 'all 1s ease-out';
-                floatEl.style.zIndex = '100';
-                
-                this.gameContainer.appendChild(floatEl); 
-                void floatEl.offsetWidth; 
-                floatEl.style.top = `${y - 50}px`;
-                floatEl.style.opacity = '0';
-                setTimeout(() => floatEl.remove(), 1000);
+            float(x, y, t, c) {
+                const d = document.createElement('div');
+                d.innerText = t; d.style.color=c; d.style.position='fixed'; d.style.left=x+'px'; d.style.top=y+'px';
+                d.style.fontWeight='bold'; d.style.fontSize='1.5rem'; d.style.transition='1s'; d.style.zIndex=999;
+                document.body.appendChild(d);
+                requestAnimationFrame(()=> { d.style.top=(y-50)+'px'; d.style.opacity=0; });
+                setTimeout(()=>d.remove(), 1000);
             }
 
-            updateScore() {
-                this.scoreDisplay.innerText = this.score;
+            updateHud() {
+                document.getElementById('score').innerText = this.score;
+                document.getElementById('timer').innerText = this.timer;
             }
 
-            endGame(win = false) {
+            end() {
                 this.gameActive = false;
-                clearInterval(this.spawnInterval);
-                clearInterval(this.checkCollisionInterval);
+                this.intervals.forEach(clearInterval);
+                this.intervals = [];
+                this.header.classList.add('hidden');
+                this.playArea.querySelectorAll('.item').forEach(e => e.remove());
                 
-                const remainingHearts = document.querySelectorAll('.heart, .broken-heart');
-                remainingHearts.forEach(h => h.remove());
-
-                this.gameOverScreen.style.removeProperty('display');
-                this.gameOverScreen.classList.remove('hidden');
+                this.resultScreen.classList.remove('hidden');
+                const win = this.score >= this.currentLevel.goal;
                 
-                if (win || this.score >= 100) {
-                    this.resultTitle.innerText = "❤️ 100% LOVE! ❤️";
-                    this.resultMessage.innerHTML = 
-                        `"Amritha, in all the world, there is no heart for me like yours.<br>` + 
-                        `In all the world, there is no love for you like mine."<br><br>` +
-                        `<b>I Love You Amritha!</b>`;
+                if(win) {
+                    document.getElementById('rs-title').innerText = "Level Complete! 🎉";
+                    document.getElementById('rs-quote').innerHTML = this.currentLevel.quote;
+                    
+                    if(this.currentLevel.id === 6) {
+                        document.getElementById('whatsapp-final-btn').classList.remove('hidden');
+                        document.getElementById('whatsapp-final-btn').style.display = 'inline-flex';
+                        document.getElementById('cal-return-btn').style.display='none';
+                        document.getElementById('retry-btn').style.display='none';
+                    } else {
+                        document.getElementById('whatsapp-final-btn').style.display = 'none';
+                        document.getElementById('cal-return-btn').style.display='block';
+                        document.getElementById('retry-btn').style.display='none';
+                    }
                 } else {
-                    this.resultTitle.innerText = "Almost There!";
-                    this.resultMessage.innerHTML = `Amritha, you collected ${this.score}% of Sajanlal's love.<br>Try again to get the perfect score!`;
+                    document.getElementById('rs-title').innerText = "Try Again!";
+                    document.getElementById('rs-quote').innerText = `You need ${this.currentLevel.goal}% to win!`;
+                    document.getElementById('retry-btn').style.display='block';
+                    document.getElementById('cal-return-btn').style.display='block';
+                    document.getElementById('whatsapp-final-btn').style.display = 'none';
                 }
-            }
-
-            shareOnWhatsApp() {
-                const text = `Sajanlal, I faced your challenge and got ${this.score}%! You are my forever Valentine! ❤️`;
-                const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
-                window.open(url, '_blank');
             }
         }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            new ValentineGame();
-        });
+        
+        new ValentineGame();
     </script>
 </body>
 </html>
+
